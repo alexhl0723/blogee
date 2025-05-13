@@ -4,7 +4,7 @@ import 'clsx';
 import { b as $$XTwiter, a as $$Discord } from './XTwiter_1pSEv-Hi.mjs';
 import { jsxs, jsx } from 'react/jsx-runtime';
 import { useState, useRef, useEffect } from 'react';
-import { g as getCollection } from './FechaRelativa_DBT7_PJa.mjs';
+import { g as getCollection } from './FechaRelativa_DRF_B2rg.mjs';
 
 const $$Astro$2 = createAstro();
 const $$Barrita = createComponent(($$result, $$props, $$slots) => {

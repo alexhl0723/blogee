@@ -1,6 +1,6 @@
 import { a as createComponent, g as renderComponent, r as renderTemplate, m as maybeRenderHead, f as addAttribute } from '../../chunks/astro/server_Blp1FlTl.mjs';
 import 'kleur/colors';
-import { g as getCollection, $ as $$Layout, F as FechaRelativa } from '../../chunks/FechaRelativa_DBT7_PJa.mjs';
+import { g as getCollection, $ as $$Layout, F as FechaRelativa } from '../../chunks/FechaRelativa_DRF_B2rg.mjs';
 import { $ as $$Coment, a as $$Discord, b as $$XTwiter } from '../../chunks/XTwiter_1pSEv-Hi.mjs';
 import { $ as $$TvAnime, a as $$Games } from '../../chunks/games_D9IbsmnW.mjs';
 export { renderers } from '../../renderers.mjs';
