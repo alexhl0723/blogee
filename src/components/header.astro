@@ -1,0 +1,58 @@
+---
+import Barrita from "../icons/barrita.astro"
+import Discord from "../icons/discord.astro"
+import Facebook from "../icons/facebook.astro"
+import XTwiter from "../icons/XTwiter.astro"
+import Luz from "../icons/luz.astro"
+import SearchBar from "../components/jsx/SearchBar.jsx"
+// import { SignedIn, SignedOut, UserButton, SignInButton } from "@clerk/astro/components";
+import { getCollection } from 'astro:content'
+
+const articles = (await getCollection('articles'))
+  .filter(article => article.data.publishDate) // solo los que tienen fecha
+  .sort((a, b) => { 
+    const dateA = new Date(a.data.publishDate!).getTime();
+    const dateB = new Date(b.data.publishDate!).getTime();
+    return dateB - dateA; // más nuevo primero
+  });
+
+const searchData = articles.map(article => ({
+  id: article.id,
+  title: article.data.title,
+  category: article.data.categoryName,
+  url: `/noticias/${article.slug}`//o .split('.md').join('')} si es con el id recuerda alex
+}));
+---
+
+<header class="flex justify-around bg-gray-800 text-white p-4 align-center items-center max-w-[2000px] m-auto">
+    <div class="flex items-center gap-4">
+        <span><Barrita/></span>
+        <h1 class="text-xl font-bold">Kudasai.</h1>
+        <nav class="flex gap-4 ml-4">
+            <a href="/" class="hover:text-gray-300">Inicio</a>
+            <a href="/anime/1" class="hover:text-gray-300">Anime</a>
+            <a href="/games/1" class="hover:text-gray-300">Videojuegos</a>
+            <a href="#" class="hover:text-gray-300">Perú</a>
+            <a href="/editor" class="hover:text-gray-300">Editor</a>
+        </nav>
+    </div>
+    <div class="flex items-center gap-4">
+        <div class="flex gap-2">
+            <a href="#" aria-label="Facebook"><Facebook class="w-6 h-6" /></a>
+            <a href="#" aria-label="Twitter"><XTwiter class="w-6 h-6" /></a>
+            <a href="#" aria-label="Discord"><Discord class="w-6 h-6" /></a>
+            <button aria-label="Cambiar tema"><Luz class="w-6 h-6"/></button>
+        </div>
+        <SearchBar client:load searchData={searchData} />
+    </div>
+    <div class="" aria-label="Acciones de usuario">
+    <!-- <SignedOut>
+      <SignInButton class="text-white rounded-full cursor-pointer bg-alex hover:bg-alex/80 transition-colors duration-300 hover:scale-110 hover:transition-transform px-8 py-2" mode="modal">
+        Iniciar sesión
+      </SignInButton>
+    </SignedOut>
+    <SignedIn>
+      <UserButton/>
+    </SignedIn> -->
+    </div>
+    </header>
