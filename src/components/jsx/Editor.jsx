@@ -177,12 +177,14 @@ export default function Editor() {
   const [categoria, setCategoria] = useState('');
   const [imagen, setImagen] = useState('');
   const [descripcion, setDescripcion] = useState('');
+  const [autor, setAutor] = useState('');
   const [guardado, setGuardado] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [wordCount, setWordCount] = useState({ characters: 0, words: 0 });
   const [error, setError] = useState('');
 
   const categorias = ["games", "anime", "tecnologia"];
+  const autores = ["zztitabro", "autor2", "elzztitamaumau"];
 
   const editor = useEditor({
     extensions: [
@@ -252,6 +254,7 @@ export default function Editor() {
         content: content,
         categoryName: categoria,
         description: descripcion,
+        author: autor,
         img: imagen // Este campo es opcional
       };
 
@@ -270,6 +273,7 @@ export default function Editor() {
         setGuardado(true);
         setTimeout(() => setGuardado(false), 3000);
         alert(data.message || "Artículo guardado correctamente");
+        redirect("/")
       } else {
         setError(data.error || "Error al guardar el artículo");
       }
@@ -344,6 +348,23 @@ export default function Editor() {
           />
         </div>
 
+        <div className="form-group">
+          <label htmlFor="autor">Autor</label>
+          <select
+            id="autor"
+            value={autor}
+            onChange={(e) => setAutor(e.target.value)}
+            className="editor-categoria-select w-full"
+          >
+            <option value="">Selecciona un autor</option>
+            {autores.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className="editor-toolbar-wrapper">
           {editor && <MenuBar editor={editor} />}
         </div>
@@ -383,6 +404,7 @@ export default function Editor() {
           {categoria && <div className="preview-category">Categoría: {categoria}</div>}
           {imagen && <img src={imagen} alt={titulo} className="preview-image" />}
           {descripcion && <p className="preview-description">{descripcion}</p>}
+          {autor && <p className="preview-author">Autor: {autor}</p>} 
           <div
             dangerouslySetInnerHTML={{ __html: content }}
             className="preview-article-content"

@@ -1,0 +1,74 @@
+---
+import Discord from "../icons/discord.astro";
+import Arrow from "../icons/arrow.astro";
+import XTwiter from "../icons/XTwiter.astro";
+import TvAnime from "../icons/tvAnime.astro";
+import Games from "../icons/games.astro";
+---
+
+<section class="lg:w-1/3 sticky top-24">
+    <div>
+      <!-- Social Media -->
+      <article class="p-6 mb-8">
+        <h2 class="text-2xl font-bold mb-6 pb-3 border-b text-white/80">Comunidad</h2>
+        
+        <div class="flex items-center mb-5 p-4 rounded-lg transition-colors hover:bg-purple-900/10 hover:text-white">
+          <Discord class="w-12 h-12 text-indigo-600 flex-shrink-0 "/>
+          <div class="ml-4">
+            <span class="block text-sm text-white/80">Agrégame en </span>
+            <span class="font-medium text-lg text-white/80">Discord</span>
+          </div>
+          <div class="ml-auto">
+            <Arrow class="text-white hover:rotate-270 transition-transform duration-300"/>
+          </div>
+        </div>
+        <a href="https://x.com/zzztita" target="_blank">
+        <div class="flex items-center p-4 rounded-lg transition-colors hover:bg-purple-900/10 hover:text-white">
+          <XTwiter class="w-12 h-12 text-gray-800 flex-shrink-0"/>
+          <div class="ml-4">
+            <span class="block text-sm text-white/80">Sígueme en mi</span>
+            <span class="font-medium text-lg text-white/80">Twitter</span>
+          </div>
+          <div class="ml-auto">
+            <Arrow class="text-white hover:rotate-270 transition-transform duration-300"/>
+          </div>
+        </div>
+        </a>
+      </article>
+
+      <!-- Categories -->
+      <article class="p-6 mb-8">
+        <h2 class="text-2xl font-bold mb-6 pb-3 border-b text-white/80">Categorías</h2>
+      
+        <a href="/anime/1">
+        <div class="flex items-center p-4 rounded-lg transition-colors mb-3 hover:bg-purple-900/10 hover:text-white">
+          <TvAnime class="w-10 h-10 text-red-500 text-hazmeolvidarlaporfavor-500 flex-shrink-0"/>
+          <h3 class="ml-4 font-medium text-white/80">Anime</h3>
+          <div class="ml-auto">
+            <Arrow class="text-white hover:rotate-270 transition-transform duration-300"/>
+          </div>
+        </div>
+      </a>
+        
+      <a href="/games/1">
+        <div class="flex items-center p-4 rounded-lg transition-colors hover:bg-purple-900/10 hover:text-white">
+          <Games class="w-10 h-10 text-purple-500 flex-shrink-0"/>
+          <h3 class="ml-4 font-medium text-white/80">Videojuegos</h3>
+          <div class="ml-auto">
+            <Arrow class="text-white hover:rotate-270 transition-transform duration-300"/>
+          </div>
+        </div>
+      </a>
+      </article>
+      
+      <!-- Newsletter -->
+      <!-- <article class="bg-gradient-to-br from-indigo-600 to-purple-700 p-6 rounded-lg shadow-md text-white">
+        <h3 class="text-xl font-bold mb-3 text-white/80">Suscríbete al boletín</h3>
+        <p class="mb-4 text-white/90">Recibe las últimas noticias directamente en tu correo.</p>
+        <form class="space-y-3">
+          <input type="email" placeholder="Tu correo electrónico" class="w-full px-4 py-2 rounded-lg text-gray-800 focus:ring focus:ring-indigo-300 outline-none" />
+          <button type="submit" class="w-full bg-white text-indigo-600 font-medium py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors">Suscríbete</button>
+        </form>
+      </article> -->
+    </div>
+  </section>
