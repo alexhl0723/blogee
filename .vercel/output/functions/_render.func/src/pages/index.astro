@@ -10,18 +10,26 @@ import TvAnime from '../icons/tvAnime.astro'
 import Games from '../icons/games.astro'
 import XTwiter from '../icons/XTwiter.astro'
 import { getCollection } from 'astro:content'
+import HeroImage from '../components/heroImage.astro'
+import Arrow from '../icons/arrow.astro'
+import { getEntry } from 'astro:content'
+import Slidebar from '@/components/slidebar.astro'
+
+
 
 const articles = (await getCollection('articles'))
   .filter(article => article.data.publishDate) // solo los que tienen fecha
-  .sort((a, b) => { 
+  .sort((a, b) => {   
     const dateA = new Date(a.data.publishDate!).getTime();
     const dateB = new Date(b.data.publishDate!).getTime();
     return dateB - dateA; // más nuevo primero
   });
 
+
 const limitedArticles = articles.slice(0, 4);
 const limitArticles2 = articles.slice(4, 7);
 const limitArticles3 = articles.slice(7, 10);
+const limitArticles4 = articles.slice(10, 14);
 
 
 
@@ -34,28 +42,23 @@ function truncateText(text: string, maxLength = 100) {
 const title = 'Bienvenido a BlogZZtita';
 
 
+// Supongamos que ya tienes la lista de artículos
+const authors = await Promise.all(
+  articles.map(async (article) => {
+    const entry = await getEntry('authors', article.data.author.id);
+    return entry?.data;
+  })
+);
+
+
+
 ---
 <Layout title={title}>
   <main class="justify-center m-auto">
-  <Header/>
-  
-  
+  <Header/>  
+
   <!-- Hero Section con Parallax -->
-  <div class="h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] relative overflow-hidden">
-    <img
-      id="parallax-image"
-      src="/fondoParallax2.jpg"
-      alt="Parallax Image"
-      class="w-full h-full object-cover absolute inset-0"
-    />
-    <div class="relative flex flex-col items-center justify-center h-full text-center px-4 z-10">
-      <div class="bg-black/30 backdrop-blur-sm p-8 rounded-xl max-w-2xl">
-        <h1 class="text-5xl font-bold text-white mb-4">{title}</h1>
-        <p class="text-xl text-white/90 mb-6">Explora nuestro mundo de creatividad e inspiración a través de efectos visuales impresionantes.</p>
-        <a href="#" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-300 inline-block">Descubre más</a>
-      </div>
-    </div>
-  </div>
+  <HeroImage/>
   
   <!-- Content Section -->
   <article class="container mx-auto py-12 px-4 md:px-6 lg:px-8 flex flex-col lg:flex-row justify-between gap-10 max-w-[1350px]">
@@ -66,7 +69,7 @@ const title = 'Bienvenido a BlogZZtita';
       <!-- News Item 1 -->
       {limitedArticles.map(article => {
         const { slug, data } = article;
-        const { title, img, description, categoryName, publishDate } = data;
+        const { title, img, description, categoryName, publishDate} = data;
         const truncatedDescription = truncateText(description, 120);
         return (
           <div class="flex flex-row mb-12 rounded-lg transition-shadow duration-300 overflow-hidden">
@@ -81,17 +84,18 @@ const title = 'Bienvenido a BlogZZtita';
               <h3 class="text-xl font-semibold text-white mb-3 hover:text-purple-400 transition-colors duration-300">{title}</h3>
               </a>
               <p class="text-gray-600 mb-2 sm:mb-4 text-sm sm:text-base">{truncatedDescription}</p>
-              <div class="flex items-center text-gray-500 text-sm p-0 m-auto">
+              <div class="mb-2 flex items-center text-gray-500 text-sm p-0 m-auto">
                 <Coment class="w-4 h-4 sm:w-5 sm:h-5" />
                 <span class="mr-1">42</span>
                 <span class="mr-1"> - </span>
                 <FechaRelativa fechaISO={publishDate!.toISOString()} client:load />
               </div>
+              <a href={`/autores/${article.data.author.id}`} class="text-gray-500 hover:text-purple-400 transition-colors duration-300">{article.data.author.id}</a>
             </div>
           </div>
         )
       })}
-
+      <hr class="border-gray-200 my-10">
       <!-- Featured Cards Section -->
       <section class="flex flex-col md:flex-row gap-5 mb-12">
 
@@ -113,6 +117,7 @@ const title = 'Bienvenido a BlogZZtita';
                   <span class="mr-2">-</span>
                   <FechaRelativa fechaISO={publishDate!.toISOString()} client:load />
                 </div>
+                <a href={`/autores/${article.data.author.id}`} class="text-gray-500 hover:text-purple-400 transition-colors duration-300">{article.data.author.id}</a>
           </div>
         </div>
         )
@@ -120,6 +125,7 @@ const title = 'Bienvenido a BlogZZtita';
         
         
       </section>
+      <hr class="border-gray-200 my-10">
 
       <!-- News Item 2 -->
       <section class="mb-12">
@@ -130,221 +136,89 @@ const title = 'Bienvenido a BlogZZtita';
           return (
             <div class="flex flex-col md:flex-row mb-12 rounded-lg transition-shadow duration-300 overflow-hidden">
               <div class="md:w-1/3">
-              <a href={`/noticias/${slug}`}>
+              
                 <img src={img} alt={title} class="w-[275px] h-[200px] rounded-[5px] object-cover" />
-              </a>
               </div>
               <div class="pl-4 pt-1 md:w-2/3">
                 <span class="inline-block  text-purple-800 rounded-full text-sm font-medium">{categoryName}</span>
-                <h3 class="text-2xl font-bold mb-1 text-white/80">{title}</h3>
+                <a href={`/noticias/${slug}`}>
+                <h3 class="text-2xl font-bold mb-1 text-white/80 hover:text-purple-400 transition-colors duration-300">{title}</h3>
+                </a>
                 <p class="text-gray-600 mb-4">{truncatedDescription}</p>
                 <div class="flex items-center text-gray-500 text-sm">
                   <Coment class="w-5 h-5 mr-1" />
                   <span class="mr-4">42 comentarios</span>
                   <FechaRelativa fechaISO={publishDate!.toISOString()} client:load />
                 </div>
+                <a href={`/autores/${article.data.author.id}`} class="text-gray-500 hover:text-purple-400 transition-colors duration-300">{article.data.author.id}</a>
               </div>
             </div>
           )
         })}
       </section>
 
-      <!-- Anime and Featured Article -->
-      <article class="flex flex-col lg:flex-row gap-8 mb-12">
+  
         
-        <article class="flex mt-10 mb-10">
-        <div>
-          <div class="mb-1">
-            <span class="inline-block px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">Anime</span>
-            <h3 class="text-[#d3d5d7] text-[16px] font-bold">Darket Days no deja las duras criticas</h3>
-            <p class="text-[#b6b1cd] mb-2 text-[14px]">esta semana del lanzamiento del juego no deja de recibir criticas enormes debido a sus muy largos...</p>
-            <div class="flex items-center text-gray-500 text-[12px]">
-              <Coment class="w-5 h-5 mr-1"/>
-              <span class="mr-4">42 comentarios</span>
-              <span>hace 10 minutos</span>
-            </div>
-          </div>
-          <div class="mb-1">
-            <span class="inline-block text-purple-800 rounded-full text-sm font-medium">Anime</span>
-            <h3 class="text-[#d3d5d7] text-[16px] font-bold">Darket Days no deja las duras criticas</h3>
-            <p class="text-[#b6b1cd] mb-2 text-[14px]">esta semana del lanzamiento del juego no deja de recibir criticas enormes debido a sus muy largos...</p>
-            <div class="flex items-center text-gray-500 text-[12px]">
-              <Coment class="w-5 h-5 mr-1"/>
-              <span class="mr-4">42 comentarios</span>
-              <span>hace 10 minutos</span>
-            </div>
-          </div>
-          <div class="mb-1">
-            <span class="inline-block text-purple-800 rounded-full text-sm font-medium">Anime</span>
-            <h3 class="text-[#d3d5d7] text-[16px] font-bold">Darket Days no deja las duras criticas</h3>
-            <p class="text-[#b6b1cd] mb-2 text-[14px]">esta semana del lanzamiento del juego no deja de recibir criticas enormes debido a sus muy largos...</p>
-            <div class="flex items-center text-gray-500 text-[12px]">
-              <Coment class="w-5 h-5 mr-1"/>
-              <span class="mr-4">42 comentarios</span>
-              <span>hace 10 minutos</span>
-            </div>
-          </div>
-          <div class="mb-1">
-            <span class="inline-block text-purple-800 rounded-full text-sm font-medium">Anime</span>
-            <h3 class="text-[#d3d5d7] text-[16px] font-bold">Darket Days no deja las duras criticas</h3>
-            <p class="text-[#b6b1cd] mb-2 text-[14px]">esta semana del lanzamiento del juego no deja de recibir criticas enormes debido a sus muy largos...</p>
-            <div class="flex items-center text-gray-500 text-[12px]">
-              <Coment class="w-5 h-5 mr-1"/>
-              <span class="mr-4">42 comentarios</span>
-              <span>hace 10 minutos</span>
-            </div>
-          </div>
-          
-        </div>
-        <div class="rounded-[5px] relative bg-[url(/darketdays.png)] bg-gradient-to-b from-transparent to-red-800 w-[535px] h-[550px] bg-cover bg-center bg-no-repeat via-transparent overflow-hidden">
-          <!-- Capa oscura encima de la imagen -->
-          <div class="absolute inset-0 bg-black/40"></div>
         
-          <!-- Contenido encima de la capa -->
-          <div class="absolute p-4">
-            <span class="text-white font-bold">Videojuegos</span>
-            <p class="text-white">Se anuncia la fecha de lanzamiento de <br>Darket Days</p>
-            <div class="flex flex-wrap gap-2 items-center text-white mt-4">
-              <span><Coment class="w-8 h-8" /></span>
-              <span>-</span>
-              <span>hace 10 minutos</span>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <hr class="mt-10">
-        
-      </article>
+   
 
       <hr class="border-gray-200 my-10">
 
-      <!-- Slider Section -->
-      <section class="mb-10">
-        <h2 class="text-2xl font-bold mb-6">Artículos destacados</h2>
-        <div class="relative overflow-hidden">
-          <!-- Slider container -->
-          <div class="flex gap-4 overflow-x-auto pb-4 snap-x">
-            <!-- Slides (placeholder) -->
-            <div class="snap-start shrink-0 w-72 h-56 bg-gray-200 rounded-lg flex items-center justify-center relative overflow-hidden group">
+
+<section class="mb-10">
+  <h2 class="text-2xl font-bold mb-6 text-white/80">Artículos destacados</h2>
+  <div class="relative overflow-hidden group" id="article-slider">
+    <!-- Slider container -->
+    <div
+      class="flex gap-4 overflow-x-auto pb-4 snap-x scroll-smooth scrollbar-hide" id="slider-track" style="-ms-overflow-style: none; scrollbar-width: none;">
+      {
+        limitArticles4.map(article => {
+          const { slug, data } = article;
+          const { title, img, categoryName } = data;
+          return (
+            <div class="snap-start shrink-0 w-72 h-56 bg-gray-900 rounded-lg flex items-center justify-center relative overflow-hidden ">
+              <img src={img} alt={title} class="absolute w-full h-full object-cover opacity-60 transition-transform duration-300 hover:scale-105" />
               <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/70 z-10"></div>
               <div class="absolute bottom-0 left-0 p-4 z-20 text-white">
-                <span class="text-sm font-medium">Categoría</span>
-                <h3 class="font-bold">Título del artículo</h3>
+                <span class="text-sm font-medium text-purple-800">{categoryName}</span>
+                <h3 class="font-bold text-lg hover:text-purple-400 transition-colors duration-300 cursor-pointer"><a href={`/noticias/${slug}`}>{title}</a></h3>
               </div>
+              <a href={`/autores/${article.data.author.id}`} class="text-gray-500 hover:text-purple-400 transition-colors duration-300">{article.data.author.id}</a>
             </div>
-            <div class="snap-start shrink-0 w-72 h-56 bg-gray-200 rounded-lg flex items-center justify-center relative overflow-hidden group">
-              <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/70 z-10"></div>
-              <div class="absolute bottom-0 left-0 p-4 z-20 text-white">
-                <span class="text-sm font-medium">Categoría</span>
-                <h3 class="font-bold">Título del artículo</h3>
-              </div>
-            </div>
-            <div class="snap-start shrink-0 w-72 h-56 bg-gray-200 rounded-lg flex items-center justify-center relative overflow-hidden group">
-              <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/70 z-10"></div>
-              <div class="absolute bottom-0 left-0 p-4 z-20 text-white">
-                <span class="text-sm font-medium">Categoría</span>
-                <h3 class="font-bold">Título del artículo</h3>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Navigation buttons -->
-          <button class="absolute left-0 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-md z-10">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <button class="absolute right-0 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-md z-10">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-      </section>
+          )
+        })
+      }
+    </div>
+
+    <!-- Navigation buttons -->
+    <button
+      class="absolute left-2 top-1/2 -translate-y-1/2 bg-gray-800/10  text-purple-800 hover:bg-purple-800/20 p-2 rounded-full shadow-md z-20"
+      id="prevBtn"
+      aria-label="Slide anterior"
+    >
+      <Arrow class="rotate-180"/>
+    </button>
+    <button
+      class="absolute right-2 top-1/2 -translate-y-1/2 bg-gray-800/10  text-purple-800 hover:bg-purple-800/20 p-2 rounded-full shadow-md z-20"
+      id="nextBtn"
+      aria-label="Siguiente slide"
+    >
+    <Arrow/>
+    </button>
+  </div>
+</section>
+
 
       
 
     </section>
 
     <!-- Sidebar -->
-    <section class="lg:w-1/3">
-      <div class="sticky top-24">
-        <!-- Social Media -->
-        <article class="p-6 mb-8">
-          <h2 class="text-2xl font-bold mb-6 pb-3 border-b text-white/80">Comunidad</h2>
-          
-          <div class="flex items-center mb-5 p-4 rounded-lg transition-colors">
-            <Discord class="w-12 h-12 text-indigo-600 flex-shrink-0"/>
-            <div class="ml-4">
-              <span class="block text-sm text-white/80">Únete a la comunidad</span>
-              <span class="font-medium text-lg text-white/80">Discord</span>
-            </div>
-            <div class="ml-auto">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-              </svg>
-            </div>
-          </div>
-          
-          <div class="flex items-center p-4 rounded-lg transition-colors">
-            <XTwiter class="w-12 h-12 text-gray-800 flex-shrink-0"/>
-            <div class="ml-4">
-              <span class="block text-sm text-white/80">Únete a la comunidad</span>
-              <span class="font-medium text-lg text-white/80">Twitter</span>
-            </div>
-            <div class="ml-auto">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-              </svg>
-            </div>
-          </div>
-        </article>
-
-        <!-- Categories -->
-        <article class="p-6 mb-8">
-          <h2 class="text-2xl font-bold mb-6 pb-3 border-b text-white/80">Categorías</h2>
-          
-          <div class="flex items-center p-4 rounded-lg transition-colors mb-3">
-            <TvAnime class="w-10 h-10 text-red-500 text-hazmeolvidarlaporfavor-500 flex-shrink-0"/>
-            <h3 class="ml-4 font-medium text-white/80">Anime</h3>
-            <div class="ml-auto">
-              <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-              </span>
-            </div>
-          </div>
-          
-          <div class="flex items-center p-4 rounded-lg transition-colors">
-            <Games class="w-10 h-10 text-purple-500 flex-shrink-0"/>
-            <h3 class="ml-4 font-medium text-white/80">Videojuegos</h3>
-            <div class="ml-auto">
-              <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-              </span>
-            </div>
-          </div>
-        </article>
-        
-        <!-- Newsletter -->
-        <article class="bg-gradient-to-br from-indigo-600 to-purple-700 p-6 rounded-lg shadow-md text-white">
-          <h3 class="text-xl font-bold mb-3 text-white/80">Suscríbete al boletín</h3>
-          <p class="mb-4 text-white/90">Recibe las últimas noticias directamente en tu correo.</p>
-          <form class="space-y-3">
-            <input type="email" placeholder="Tu correo electrónico" class="w-full px-4 py-2 rounded-lg text-gray-800 focus:ring focus:ring-indigo-300 outline-none" />
-            <button type="submit" class="w-full bg-white text-indigo-600 font-medium py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors">Suscríbete</button>
-          </form>
-        </article>
-      </div>
-    </section>
+    <Slidebar/>
   </article>
 
   </main>
 </Layout>
 <script src="../components/parallax.js"></script>
-
+<script src="../components/slider.js"></script>
 

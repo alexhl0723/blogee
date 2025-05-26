@@ -260,11 +260,11 @@ export default function Editor() {
 
       console.log("Enviando datos:", articulo);
 
-      const res = await fetch('http://localhost:4000/bloge/src/content/articles', {//astes http://localhost:4000
+      const res = await fetch('https://backend-bloge.vercel.app/bloge/src/content/articles', {//astes http://localhost:4000
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(articulo),
-      });      
+      });
       
 
       const data = await res.json();

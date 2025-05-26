@@ -20,15 +20,11 @@
 			"dest": "_render"
 		},
 		{
-			"src": "^/anime/anime/?$",
+			"src": "^/autores/([^/]+?)/?$",
 			"dest": "_render"
 		},
 		{
 			"src": "^/editor/?$",
-			"dest": "_render"
-		},
-		{
-			"src": "^/games/games/?$",
 			"dest": "_render"
 		},
 		{
